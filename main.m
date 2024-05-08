@@ -13,7 +13,7 @@ gfigure = 1;
 time_end = 300;% 模拟结束时间
 
 % 定义管道的参数
-rm = 9; % 管道半径
+rm = 9; % 无人机本身半径
 l  = 5; % 无人机长度
 vmax = 15; % 最大速度
 ro = 0; % 参数 ro，可能为角度或其他控制参数
@@ -29,7 +29,7 @@ Highway(1).rb  = 50; % 管道宽度
 
 % 初始化 UavTeam（无人机团队）
 M = 40; % 无人机数量
-UavTeam = UAVInitialization(M, rm, l, vmax); % 初始化无人机团队
+UavTeam = UAVInitialization(M, rm); % 初始化无人机团队
 A = [zeros(2 * M, 2 * M) eye(2 * M); zeros(2 * M, 2 * M) l * eye(2 * M)];
 B = [zeros(2 * M, 2 * M); -l * eye(2 * M)];
 C = eye(4 * M);
