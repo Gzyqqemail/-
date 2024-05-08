@@ -36,13 +36,13 @@ C = eye(4 * M);
 D = zeros(4 * M, 2 * M);
 Initialcondition = [InitialPosition; zeros(2 * M, 1)];
 
-% 设置所有无人机的感知半径和避障半径
+% 设置所有无人机的安全半径和避障半径
 for k=1:M
 UavTeam.Uav(k).rs = rs;
 UavTeam.Uav(k).ra = ra;
 end
 
-% 设置第一个无人机的初始航线，靠近管道边缘
+% 设置第一个无人机的初始位置，靠近管道边缘
 UavTeam.Uav(1).Waypoint = [0;149.9];
 UavTeam.Uav(1).HomePos = UavTeam.Uav(1).Waypoint;
 UavTeam.Uav(1).CurrentPos= UavTeam.Uav(1).Waypoint;
