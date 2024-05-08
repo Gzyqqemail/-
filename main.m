@@ -2,30 +2,26 @@
 clc;
 clear all;
 % 声明全局变量
-global Highway Obstacle
-global UavTeam
-global gcount gfigure
-global rm rs ra rd  InitialPosition
+global Highway Obstacle UavTeam gcount gfigure  rm rs ra rd  InitialPosition
 
 % 初始化全局变量
 gcount = 0;
 gfigure = 1;
 time_end = 300;% 模拟结束时间
 
-% 定义管道的参数
+% 无人机
 rm = 9; % 无人机本身半径
 l  = 5; % 无人机长度
 vmax = 15; % 最大速度
-ro = 0; % 参数 ro，可能为角度或其他控制参数
 rs = 20; % 安全半径
 ra = 1.5 * rs; % 避障半径
 rd = ra + rs + 2 * vmax; % 探测半径
 
 % 初始化 Highway（管道）
 Highway(1).ph1 = [0  0]'; 
-Highway(1).ph2 = [5000  0]';
-Highway(1).rh  = 150; % 管道高度
-Highway(1).rb  = 50; % 管道宽度
+Highway(1).ph2 = [10000  0]';
+Highway(1).rh  = 150; % 管道长度
+Highway(1).rb  = 50; % 管道宽度的一半
 
 % 初始化 UavTeam（无人机团队）
 M = 40; % 无人机数量
@@ -69,14 +65,20 @@ MyMap(UavTeam,Obstacle,Highway);
 %     o = [UavTeam.Uav(k).CurrentPos(1) UavTeam.Uav(k).CurrentPos(2)]';
 %     mydrawcolorball(o(1),o(2),k);   
 % end
+
+
+
+
  tic
-'start'
+'开始仿真' %#ok<NOPTS>
 sim('platform.slx')
-'over'
+'仿真结束' %#ok<NOPTS>
 toc
+
+
+
 % 绘制结果
 figure(2)
-
 % 绘制第一个子图：无人机与管道边缘的距离随时间的变化
 subplot(2, 1, 2)
 plot(mindis(1:end - 2000, 1), mindis(1:end - 2000, 3), '-', 'LineWidth', 2); hold on;

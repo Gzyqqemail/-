@@ -1,7 +1,8 @@
 function out = MyMap(UavTeam,~,Highway)
 
 M = UavTeam.AvailableNumMax;
-
+%line11是第一条线段的左端点
+%line12是第一条线段的右端点
 line11 = [Highway(1).ph1(1),Highway(1).ph2(1)-4500];
 line12 = [Highway(1).ph1(2)+Highway(1).rh,Highway(1).ph2(2)+Highway(1).rh];
 plot(line11,line12);
