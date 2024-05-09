@@ -3,13 +3,13 @@ global Highway Obstacle
 global UavTeam
 global gcount gfigure
 
-
 gcount = gcount + 1;
 
 M = UavTeam.AvailableNumMax;
 V = [];
-rh = Highway(1).rh ;
-rb=Highway(1).rb;
+rh = Highway(1).rh ;%管道宽度的一半
+rb=Highway(1).rb;%管道缓冲区宽度
+
 for k = 1:M
     UavTeam.Uav(k).CurrentPos =  in(2*(k-1)+1:2*k);
     UavTeam.Uav(k).Velocity   =  in(2*M+2*(k-1)+1: 2*M+2*k);
@@ -73,11 +73,6 @@ end
 
 u = V;
 end
-
-
-
-
-
 
 function u = mycontrol(i)
 global Highway

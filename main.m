@@ -9,21 +9,23 @@ gcount = 0;
 gfigure = 1;
 time_end = 300;% 模拟结束时间
 
-% 无人机
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 初始化 Highway（管道）
+Highway(1).ph1 = [0  0]'; 
+Highway(1).ph2 = [10000  0]';
+Highway(1).rh  = 150; % 管道宽度的一半
+Highway(1).rb  = 50; %rb是不同虚拟管道重合的长度
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 初始化 UavTeam（无人机团队）
 rm = 9; % 无人机本身半径
 l  = 5; % 无人机长度
 vmax = 15; % 最大速度
 rs = 20; % 安全半径
 ra = 1.5 * rs; % 避障半径
-rd = ra + rs + 2 * vmax; % 探测半径
-
-% 初始化 Highway（管道）
-Highway(1).ph1 = [0  0]'; 
-Highway(1).ph2 = [10000  0]';
-Highway(1).rh  = 150; % 管道长度
-Highway(1).rb  = 50; % 管道宽度的一半
-
-% 初始化 UavTeam（无人机团队）
+rd = ra + rs + 2 * vmax; % 探测半径与最大速度有关
 M = 40; % 无人机数量
 UavTeam = UAVInitialization(M, rm); % 初始化无人机团队
 A = [zeros(2 * M, 2 * M) eye(2 * M); zeros(2 * M, 2 * M) l * eye(2 * M)];
@@ -31,13 +33,11 @@ B = [zeros(2 * M, 2 * M); -l * eye(2 * M)];
 C = eye(4 * M);
 D = zeros(4 * M, 2 * M);
 Initialcondition = [InitialPosition; zeros(2 * M, 1)];
-
 % 设置所有无人机的安全半径和避障半径
 for k=1:M
 UavTeam.Uav(k).rs = rs;
 UavTeam.Uav(k).ra = ra;
 end
-
 % 设置第一个无人机的初始位置，靠近管道边缘
 UavTeam.Uav(1).Waypoint = [0;149.9];
 UavTeam.Uav(1).HomePos = UavTeam.Uav(1).Waypoint;
