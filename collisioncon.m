@@ -42,7 +42,7 @@ for k = 1:M
 
    UavTeam.Uav(k).VelocityCom   =  mycontrol(k);
     % Collect all the control 。根据速度指令修改无人机当前的速度
-     V  = [V;UavTeam.Uav(k).VelocityCom];
+     V  = [V;UavTeam.Uav(k).VelocityCom];%这个V包含所有飞机的速度指令
       else
           V  = [V; 0;0];
       end
@@ -81,8 +81,6 @@ u = V;
 
 
 end
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
