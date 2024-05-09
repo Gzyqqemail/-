@@ -1,3 +1,4 @@
+%此函数获取 所有无人机当前的位置，当前的速度，输出无人机接下来的速度，并在适当时刻更新地图、输出仿真时间。
 function u = collisioncon(in)
 global Highway Obstacle
 global UavTeam
@@ -11,19 +12,21 @@ rh = Highway(1).rh ;%管道宽度的一半
 rb=Highway(1).rb;%管道缓冲区宽度
 
 for k = 1:M
-    UavTeam.Uav(k).CurrentPos =  in(2*(k-1)+1:2*k);
-    UavTeam.Uav(k).Velocity   =  in(2*M+2*(k-1)+1: 2*M+2*k);
+    UavTeam.Uav(k).CurrentPos =  in(2*(k-1)+1:2*k); %in这个变量前2M个元素是UAV当前坐标
+    UavTeam.Uav(k).Velocity   =  in(2*M+2*(k-1)+1: 2*M+2*k);%后2M个元素是UAV当前速度
 end
 
 for k = 1:M
     % Velocity control command
-
+    %将UAV的一些变量重命名
       Pcur                      =  UavTeam.Uav(k).CurrentPos;
       Pdes                      =  UavTeam.Uav(k).Waypoint(:,UavTeam.Uav(k).CurrentTaskNum);
       Vcur                      =  UavTeam.Uav(k).Velocity;
-      ksicur= Pcur+1/UavTeam.gain*Vcur;
-      
-      if norm(ksicur)~=0
+      ksicur= Pcur+1/UavTeam.gain*Vcur; %计算滤波后的当前位置
+
+
+      %根据当前位置调整无人机所属区域，并修改无人机当前速度
+      if norm(ksicur)~=0 %这用于检查向量是否为零向量
       if ksicur(1)<-rb && UavTeam.Uav(k).State == 1 
           UavTeam.Uav(k).State = 3;
       end
@@ -36,14 +39,16 @@ for k = 1:M
               if  ksicur(2)>-rh+rb && UavTeam.Uav(k).State == 4
                                 UavTeam.Uav(k).State =5;
               end
+
    UavTeam.Uav(k).VelocityCom   =  mycontrol(k);
-    % Collect all the control
+    % Collect all the control 。根据速度指令修改无人机当前的速度
      V  = [V;UavTeam.Uav(k).VelocityCom];
       else
           V  = [V; 0;0];
       end
 
-% plot online
+
+% plot online,更新地图  
   if gcount>=2500
      figure(1);
      gfigure=gfigure+1;
@@ -56,11 +61,12 @@ for k = 1:M
      gcount = 0;
      in(end)
   end
+
      if gcount>=1000
         figure(1);
     
          hold off
-         MyMap(UavTeam,Obstacle,Highway);
+         MyMap(UavTeam,Obstacle,Highway);%更新地图
 
      end
 end
@@ -68,17 +74,25 @@ end
 if gcount>=1000
 gcount = 0;
 gfigure = gfigure+1;
-t = in(end)
+t = in(end)%in的最后一个元素是仿真时间，将仿真时间输出。
 end
 
 u = V;
+
+
 end
 
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%此函数用于返回无人机当前的速度
 function u = mycontrol(i)
 global Highway
 global UavTeam
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%相当于将无人机的变量重命名了
 Pcur  =  UavTeam.Uav(i).CurrentPos;
 Vcur  =  UavTeam.Uav(i).Velocity;
 Pdes  =  UavTeam.Uav(i).Waypoint(:,UavTeam.Uav(i).CurrentTaskNum);
@@ -86,7 +100,7 @@ Pdes  =  UavTeam.Uav(i).Waypoint(:,UavTeam.Uav(i).CurrentTaskNum);
    ra = UavTeam.Uav(i).ra;     
  vmax = UavTeam.Uav(i).vmax;
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%相当于把管道的变量重命名了
  % Area Definition
 pt1  = Highway(1).ph1; 
 pt2  = Highway(1).ph2;
@@ -132,7 +146,7 @@ end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function u = mytunnel(i,p1,p2,p3,rh)
+function u = mytunnel(i,p1,p2,p3,rh)%p1,p2是管道中心线的左右端点，p3是上管道线的右端点
 global UavTeam
 
 Pcur  =  UavTeam.Uav(i).CurrentPos;
@@ -142,7 +156,7 @@ Pdes  =  UavTeam.Uav(i).Waypoint(:,UavTeam.Uav(i).CurrentTaskNum);
    ra = UavTeam.Uav(i).ra;     
  vmax = UavTeam.Uav(i).vmax;
 
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%两个矩阵，方便计算无人机到管道线的距离
  At12 = eye(2) - (p1-p2)*(p1-p2)'/(norm(p1-p2)*norm(p1-p2));
  At23 = eye(2) - (p2-p3)*(p2-p3)'/(norm(p2-p3)*norm(p2-p3)); 
  
@@ -176,9 +190,12 @@ Pdes  =  UavTeam.Uav(i).Waypoint(:,UavTeam.Uav(i).CurrentTaskNum);
      Vt = Vt - ci*(ksihi/norm(ksihi));
      
    % Sum of all velocities
-    u = mysat(Vl+Vm+Vt,vmax);
+    u = mysat(Vl+Vm+Vt,vmax);%根据3个约束条件得到无人机当前的速度，并返回。
 end
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     function u=mys(x,rs)
 
 x2 =  1 + 1/tan(67.5/180*pi)*rs;
@@ -204,7 +221,8 @@ else
     u = 0;
 end
 end
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function u=mysat(x,a)
 % ensure the direction to be the same
@@ -214,7 +232,8 @@ function u=mysat(x,a)
        u =x ;
     end
 end
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function u=mysigma(x,d1,d2)
 
@@ -239,4 +258,3 @@ else
     u = 0;
 end
 end
-
