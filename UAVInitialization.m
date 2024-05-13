@@ -57,6 +57,6 @@ for k = 1: UavTeam.AvailableNumMax
           UavTeam.Uav(k).AllTaskNum = 1;
           % Updata SavedWPOB   
           SavedWPOB = [SavedWPOB UavTeam.Uav(k).Waypoint];    
-          InitialPosition=[InitialPosition;UavTeam.Uav(k).CurrentPos];
+          InitialPosition=[InitialPosition;UavTeam.Uav(k).CurrentPos];%将无人机当前的位置设置为无人机的初始位置，在初始化的过程中不断增加位置坐标
 end
 end

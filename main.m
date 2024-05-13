@@ -32,7 +32,7 @@ A = [zeros(2 * M, 2 * M) eye(2 * M); zeros(2 * M, 2 * M) l * eye(2 * M)];
 B = [zeros(2 * M, 2 * M); -l * eye(2 * M)];
 C = eye(4 * M);
 D = zeros(4 * M, 2 * M);
-Initialcondition = [InitialPosition; zeros(2 * M, 1)];
+Initialcondition = [InitialPosition; zeros(2 * M, 1)];%前2M个元素是坐标，后2M个元素是速度
 % 设置所有无人机的安全半径和避障半径
 for k=1:M
 UavTeam.Uav(k).rs = rs;
