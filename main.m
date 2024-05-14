@@ -2,13 +2,13 @@
 clc;
 clear all;
 % 声明全局变量
-global Highway Obstacle UavTeam gcount gfigure  rm rs ra rd  InitialPosition
+global Highway Obstacle UavTeam gcount gfigure  rm rs ra rd  InitialPosition  gzycount
 
 % 初始化全局变量
 gcount = 0;
 gfigure = 1;
 time_end = 300;% 模拟结束时间
-
+gzycount = 0;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -57,7 +57,7 @@ UavTeam.Uav(1).CurrentPos= UavTeam.Uav(1).Waypoint;
 
 % Draw 2D map
 % 绘制初始地图
-figure(1);
+f=figure(1);
 % subplot(3,2,1)
 MyMap(UavTeam,Obstacle,Highway);
  

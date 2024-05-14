@@ -2,8 +2,8 @@
 function u = collisioncon(in)
 global Highway Obstacle
 global UavTeam
-global gcount gfigure
-
+global gcount gfigure gzycount
+gzycount = gzycount+1
 gcount = gcount + 1;
 
 M = UavTeam.AvailableNumMax;
@@ -15,7 +15,7 @@ for k = 1:M
     UavTeam.Uav(k).CurrentPos =  in(2*(k-1)+1:2*k); %in这个变量前2M个元素是UAV当前坐标
     UavTeam.Uav(k).Velocity   =  in(2*M+2*(k-1)+1: 2*M+2*k);%后2M个元素是UAV当前速度
 end
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for k = 1:M
     % Velocity control command
     %将UAV的一些变量重命名
@@ -23,8 +23,6 @@ for k = 1:M
       Pdes                      =  UavTeam.Uav(k).Waypoint(:,UavTeam.Uav(k).CurrentTaskNum);
       Vcur                      =  UavTeam.Uav(k).Velocity;
       ksicur= Pcur+1/UavTeam.gain*Vcur; %计算滤波后的当前位置
-
-
       %根据当前位置调整无人机所属区域，并修改无人机当前速度
       if norm(ksicur)~=0 %这用于检查向量是否为零向量
       if ksicur(1)<-rb && UavTeam.Uav(k).State == 1 
@@ -39,47 +37,26 @@ for k = 1:M
               if  ksicur(2)>-rh+rb && UavTeam.Uav(k).State == 4
                                 UavTeam.Uav(k).State =5;
               end
-
    UavTeam.Uav(k).VelocityCom   =  mycontrol(k);
     % Collect all the control 。根据速度指令修改无人机当前的速度
-     V  = [V;UavTeam.Uav(k).VelocityCom];%这个V包含所有飞机的速度指令
+     V  = [V;UavTeam.Uav(k).VelocityCom];%这个V包含所有飞机在每次循环时的的速度指令
       else
           V  = [V; 0;0];
       end
-
-
-% plot online,更新地图  
-  if gcount>=2500
-     figure(1);
-     gfigure=gfigure+1;
-%      subplot(3,2,gfigure)
-     MyMap(UavTeam,Obstacle,Highway);
-     for k = 1:M
-        o = [UavTeam.Uav(k).CurrentPos(1) UavTeam.Uav(k).CurrentPos(2)]';
-        mydrawcolorball(o,k); 
-     end
-     gcount = 0;
-     in(end)
-  end
-
-     if gcount>=1000
-        figure(1);
-    
-         hold off
-         MyMap(UavTeam,Obstacle,Highway);%更新地图
-
-     end
 end
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%每当collision这个函数执行1000次，输出一次当前的仿真时间
 if gcount>=1000
 gcount = 0;
 gfigure = gfigure+1;
 t = in(end)%in的最后一个元素是仿真时间，将仿真时间输出。
+figure(1); 
+hold off;
+MyMap(UavTeam,Obstacle,Highway)
+title(['第' num2str(gfigure) '张图'] )
 end
 
 u = V;
-
-
 end
 
 

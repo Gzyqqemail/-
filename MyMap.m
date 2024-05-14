@@ -5,15 +5,15 @@ M = UavTeam.AvailableNumMax;
 %line12是第一条线段的右端点
 line11 = [Highway(1).ph1(1),Highway(1).ph2(1)-4500];
 line12 = [Highway(1).ph1(2)+Highway(1).rh,Highway(1).ph2(2)+Highway(1).rh];
-plot(line11,line12);
+plot(line11,line12);%画一条直线
 hold on
 line21 = [Highway(1).ph1(1)  Highway(1).ph2(1)-4500]';
 line22 = [Highway(1).ph1(2)-Highway(1).rh  Highway(1).ph2(2)-Highway(1).rh]';
-plot(line21,line22);
+plot(line21,line22);%画另一条直线
 hold on
 %每个无人机都有两个圆心，O1是真正的圆心，O2是考虑速度之后的圆心
 for k = 1: M
-    o1 = [UavTeam.Uav(k).CurrentPos(1) UavTeam.Uav(k).CurrentPos(2)]';
+    o1 = [UavTeam.Uav(k).CurrentPos(1) UavTeam.Uav(k).CurrentPos(2)]';%以当前位置为圆心画圆
     o2 = [UavTeam.Uav(k).CurrentPos(1)+1/UavTeam.gain*UavTeam.Uav(k).Velocity(1) UavTeam.Uav(k).CurrentPos(2)+1/UavTeam.gain*UavTeam.Uav(k).Velocity(2)]';
     mydrawcolorball(o1,o2,k);  
 end
