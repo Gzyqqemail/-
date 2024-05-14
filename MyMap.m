@@ -17,7 +17,7 @@ for k = 1: M
     o2 = [UavTeam.Uav(k).CurrentPos(1)+1/UavTeam.gain*UavTeam.Uav(k).Velocity(1) UavTeam.Uav(k).CurrentPos(2)+1/UavTeam.gain*UavTeam.Uav(k).Velocity(2)]';
     mydrawcolorball(o1,o2,k);  
 end
-axis([-800 800 -800 800]) 
+axis([-600 3000 -800 800]) 
 grid on
 xlabel('x')
 ylabel('y')

@@ -14,7 +14,7 @@ gzycount = 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % 初始化 Highway（管道）
 Highway(1).ph1 = [0  0]'; 
-Highway(1).ph2 = [10000  0]';
+Highway(1).ph2 = [5000  0]';
 Highway(1).rh  = 150; % 管道宽度的一半
 Highway(1).rb  = 50; %rb是不同虚拟管道重合的长度
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,14 +60,12 @@ UavTeam.Uav(1).CurrentPos= UavTeam.Uav(1).Waypoint;
 f=figure(1);
 % subplot(3,2,1)
 MyMap(UavTeam,Obstacle,Highway);
+title(['第' num2str(gfigure) '张图'] )
  
 %  for k = 1: M
 %     o = [UavTeam.Uav(k).CurrentPos(1) UavTeam.Uav(k).CurrentPos(2)]';
 %     mydrawcolorball(o(1),o(2),k);   
 % end
-
-
-
 
  tic
 '开始仿真' %#ok<NOPTS>
